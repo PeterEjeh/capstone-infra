@@ -19,3 +19,54 @@ resource "aws_iam_user_policy_attachment" "kops" {
 resource "aws_iam_access_key" "kops" {
   user = aws_iam_user.kops.name
 }
+
+resource "aws_iam_user_policy" "kops_eventbridge" {
+  name = "kops-eventbridge"
+  user = aws_iam_user.kops.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "events:ListRules",
+          "events:ListTargetsByRule",
+          "events:ListTagsForResource",
+          "events:PutRule",
+          "events:PutTargets",
+          "events:DeleteRule",
+          "events:RemoveTargets",
+          "events:DescribeRule",
+	  "events:TagResource",
+          "events:UntagResource"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy" "kops_sqs" {
+  name = "kops-sqs"
+  user = aws_iam_user.kops.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "sqs:ListQueues",
+          "sqs:CreateQueue",
+          "sqs:DeleteQueue",
+          "sqs:GetQueueAttributes",
+          "sqs:SetQueueAttributes",
+          "sqs:ListQueueTags",
+          "sqs:TagQueue"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}

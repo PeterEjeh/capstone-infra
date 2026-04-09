@@ -17,3 +17,43 @@ resource "aws_s3_bucket_versioning" "kops_state" {
   bucket = aws_s3_bucket.kops_state.id
   versioning_configuration { status = "Enabled" }
 }
+
+variable "ingress_hostname" {
+  description = "ELB hostname from NGINX ingress"
+  type        = string
+  default     = ""
+}
+
+
+data "aws_route53_zone" "kops_subdomain" {
+  name         = "taskapp.${var.domain_name}"
+  private_zone = false
+}
+
+data "aws_elb_hosted_zone_id" "main" {}
+
+resource "aws_route53_record" "taskapp" {
+  count   = var.ingress_hostname != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.kops_subdomain.zone_id
+  name    = "taskapp.${var.domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = var.ingress_hostname
+    zone_id                = data.aws_elb_hosted_zone_id.main.id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "api" {
+  count   = var.ingress_hostname != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.kops_subdomain.zone_id
+  name    = "api.${var.domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = var.ingress_hostname
+    zone_id                = data.aws_elb_hosted_zone_id.main.id
+    evaluate_target_health = true
+  }
+}

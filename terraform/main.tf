@@ -9,6 +9,7 @@ module "dns" {
   source       = "./modules/dns"
   domain_name  = "taskapp-peter.name.ng"
   project_name = "capstone"
+  ingress_hostname = "a21a8f9fcecc54523bbef89d417624f3-925894315.us-east-1.elb.amazonaws.com"
 }
 
 module "iam" {
@@ -22,3 +23,13 @@ output "private_subnet_ids" { value = module.vpc.private_subnet_ids }
 output "nameservers"        { value = module.dns.nameservers }
 output "kops_state_bucket"  { value = module.dns.kops_state_bucket }
 output "kops_access_key"    { value = module.iam.kops_access_key_id }
+output "kops_secret_access_key" {
+  value     = module.iam.kops_secret_access_key
+  sensitive = true
+}
+
+variable "ingress_hostname" {
+  description = "ELB hostname from NGINX ingress"
+  type        = string
+  default     = ""
+}
