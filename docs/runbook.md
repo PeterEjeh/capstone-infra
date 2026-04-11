@@ -212,7 +212,7 @@ kubectl get pods -n taskapp | grep postgres
 # Test connection from backend
 kubectl exec -n taskapp deploy/taskapp-backend -- python -c "
 import psycopg2
-conn = psycopg2.connect('postgresql://taskapp_user:taskapp_password@postgres:5432/taskapp')
+conn = psycopg2.connect('postgresql://taskapp_user:taskapp_${PASSWORD}@postgres:5432/taskapp')
 print('Connected successfully')
 "
 
