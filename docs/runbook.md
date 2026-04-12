@@ -305,4 +305,4 @@ cd ~/capstone-infra/terraform/backend-bootstrap
 terraform destroy
 ```
 
-> ⚠ Warning: Step 4 will delete your Terraform state. Only run if you are fully done with the project.
+> ⚠ Warning: Step 6 will delete the Terraform state. Only run if you are fully done with the project.
